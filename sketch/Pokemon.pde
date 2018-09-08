@@ -22,13 +22,12 @@ class Pokemon {
     this.name = json.getString("name");
     
     types = new ArrayList();
-    JSONArray typesJSON = json.getJSONArray("types");
+    JSONArray typesJSON = json.getJSONArray("types"); //<>//
     for (int i = 0; i < typesJSON.size(); i++) {
       JSONObject j = typesJSON.getJSONObject(i);
       JSONObject t = j.getJSONObject("type");
       types.add(t.getString("name"));
     }
-    println(types);
    
     JSONObject spritesJSON = json.getJSONObject("sprites");
     String imgLink = spritesJSON.getString("front_default");
@@ -39,31 +38,43 @@ class Pokemon {
     for (int i = 0; i < jsonMoves.size(); i++) {
       JSONObject jsonMove = jsonMoves.getJSONObject(i);
       String moveName = jsonMove.getJSONObject("move").getString("name");
-      System.out.println(moveName);
+     // float moveDamage = jsonMove.getJSONObject("move").getFloat("damage");
+
       Move move = new Move(moveName);
+     
       this.moves.add(move);
+    }
+    
+    // Get Pokemon's Stats (hp, attack, defense)
+    JSONArray jsonStats = json.getJSONArray("stats");
+    for (int i = 0; i < jsonStats.size(); i++) {
+      JSONObject stat = jsonStats.getJSONObject(i);
+      String statName = stat.getJSONObject("stat").getString("name");
+      println(statName);
+      if (statName.equals("hp")) {
+        this.hp = stat.getInt("base_stat");
+      } else if (statName.equals("attack")) {
+        this.attack = stat.getInt("base_stat");
+      } else if (statName.equals("defense")) {
+        this.defense = stat.getInt("base_stat");
+      } 
     }
   }
   void sayHello(){
     println ("My name is " + this.name);
   } 
-  void attack(Pokemon pokemon, Move move){
-    //damage = 22 times power times A/D  divided by 50 + 2
-     
+  int attack(Pokemon pokemon, Move move){ //<>//
+    //damage = 22 times power times A/D  divided by 50 + 2 //<>//
+    println(this.attack);
     float damage;
-    if (random(100) > move.accuracy) {
-      damage = 0;
-    } else {
-      damage = ((22 * move.power * this.attack / pokemon.defense) / 50) + 2;
-    }
+    println("the move power is " + str(move.power));
+    println("the pokemon attack is " + str(this.attack));
+    println("the pokemon defense is " + str(pokemon.defense));
+    damage = ((22 * move.power * this.attack / pokemon.defense) / 50) + 2;
     
-    pokemon.hp = pokemon.hp - int(damage);
+    pokemon.hp = pokemon.hp - int(damage); //<>//
+    
+    return int(damage);
     
   }
-  
-  
-
-  
- 
-   
 }

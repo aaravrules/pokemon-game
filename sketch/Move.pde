@@ -13,7 +13,17 @@ class Move{
     this.name = data.getString("name");
     this.id = data.getInt("id");
     this.priority = data.getInt("priority");
-    //this.power = data.getInt("power");
+    if (data.isNull("accuracy")) {
+      this.accuracy = 100;
+    } else {
+      this.accuracy = data.getInt("accuracy");
+    }
+    if (data.isNull("power")){
+      this.power = 0;
+    } else {
+      this.power = data.getInt("power");
+    }
+   
   }
   
   @Override

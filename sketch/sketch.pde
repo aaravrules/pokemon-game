@@ -5,11 +5,13 @@ PImage bg;
 float playerPokemonX;
 float playerPokemonY;
 int counter;
+//make a state variable.mode of game not Move
+String mode = "follow mouse";
 
+String currentMessage = "";
 ArrayList<Move> randomMoves;
 String randomMovesString;
 
-boolean followMouse = true;
 void setup(){
   size(1200, 900);
   imageMode(CENTER);
@@ -48,20 +50,21 @@ void setup(){
   }
   **/
   
+  
    
 }
 
 void draw(){
   image(bg, width/2, height/2, width, height);
-  if (followMouse) {
+  if (mode == "follow mouse") {
     playerPokemonX = mouseX;
     playerPokemonY = mouseY;
-  } else {
-    showDialogueBox(randomMovesString);
+  } else if (mode == "choose move") {
+    currentMessage = randomMovesString;
   }
   
+  showDialogueBox(currentMessage);
   
-
   image(pk.img, playerPokemonX, playerPokemonY, 150, 150);
   fill(0);
   text("YOU", playerPokemonX, playerPokemonY - 80);
@@ -91,27 +94,27 @@ void showDialogueBox(String words){
 }
 
 void mouseClicked() {
-  followMouse = false;
+  mode = "choose move";
   counter = counter + 1;
 }
 
 void keyPressed() {
-  if (!followMouse) {
+  if (mode == "choose move") {
     // Choosing the move to do
     if (key == '1'){
-      println(randomMoves.get(0));
-      println(pk);
+      moveChosen(randomMoves.get(0));
     } else if (key == '2'){
-      println(randomMoves.get(1));
+      moveChosen(randomMoves.get(1));
     } else if (key == '3'){
-      println(randomMoves.get(2));
+      moveChosen(randomMoves.get(2));
     } else if (key == '4'){
-      println(randomMoves.get(3));
+      moveChosen(randomMoves.get(3));
     }
   }
 }
 
 void moveChosen(Move playerMove){
+  mode = "move chosen";
   int randomIndex = int(random(0, opponent.moves.size()));
   Move opponentMove = opponent.moves.get(randomIndex);
   
@@ -134,13 +137,26 @@ void moveChosen(Move playerMove){
     firstPokemon = opponent;
     secondPokemon = pk;
   }
-  /*
-  First move:
-    Defender dead?
-    If so, end.(Print something)
-   Second move:
-     Defender dead?
-     If so, end(Print something)
-    */
- 
+  
+  String message = "";
+  
+  // First move: first Pokemon attacks second Pokemon with firstMove
+  int firstDamage = firstPokemon.attack(secondPokemon, firstMove);
+  message += firstPokemon.name + " used " + firstMove.name + " on " + secondPokemon.name + ". It did " + str(firstDamage) + " damage.\n";
+  if (secondPokemon.hp <= 0){
+    message += secondPokemon.name + " has fainted.\n";
+  } else {
+    message += secondPokemon.name + " has " + str(secondPokemon.hp) + " hp left.\n";
+    
+    int secondDamage = secondPokemon.attack(firstPokemon, secondMove);
+    message += secondPokemon.name + " used " + secondMove.name + " on " + firstPokemon.name + ". It did " + str(secondDamage) + " damage.\n";
+    if (firstPokemon.hp <= 0){
+      message += firstPokemon.name + " has fainted.";
+    } else {
+      message += firstPokemon.name + " has " + str(firstPokemon.hp) + " hp left.";
+    } 
+  }
+  
+  // showDialogueBox(message);
+  currentMessage = message;
 }

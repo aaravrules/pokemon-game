@@ -6,11 +6,9 @@ class ResourceGetter{
   JSONObject getResource(String resourceType, String resourceID) {
     //checks if data is cached
     File cachedFile = new File(sketchPath + "resources/" + resourceType + "/" + resourceID + ".txt");
-    println(cachedFile.getAbsolutePath());
     if (cachedFile.exists()) {
       //data is cached; open file and parse as json
       String jsonString = loadStrings(sketchPath + "resources/" + resourceType + "/" + resourceID + ".txt")[0];
-      println(jsonString);
       JSONObject json = parseJSONObject(jsonString);
       return json;
     }    
@@ -27,7 +25,6 @@ class ResourceGetter{
   
   PImage getPokemonImage(String pokemonName, String imgLink) {
     File cachedImg = new File(sketchPath + "resources/sprites/" + pokemonName + ".png");
-    println(cachedImg.exists());
     if (cachedImg.exists()) {
       return loadImage(sketchPath + "resources/sprites/" + pokemonName + ".png");
     } else {
